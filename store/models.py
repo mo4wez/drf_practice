@@ -1,10 +1,14 @@
 from django.db import models
 
 
-
 class Category(models.Model):
     title = models.CharField(max_length=250)
     description = models.CharField(max_length=700, blank=True)
+
+
+class Discount(models.Model):
+    discount = models.FloatField()
+    description = models.CharField(max_length=250)
 
 
 class Product(models.Model):
@@ -13,8 +17,8 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=6 ,decimal_places=2)
     inventory = models.PositiveIntegerField()
-    category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
-
+    category = models.ForeignKey(to=Category, on_delete=models.PROTECT, related_name='products')
+    discounts = models.ManyToManyField(to=Discount, blank=True,)
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_modified = models.DateTimeField(auto_now=True)
 
@@ -27,7 +31,14 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True, blank=True)
 
 
-class order(models.Model):
+class Address(models.Model):
+    customer = models.OneToOneField(to=Customer, on_delete=models.CASCADE, primary_key=True)
+    province = models.CharField(max_length=250)
+    city = models.CharField(max_length=250)
+    street = models.CharField(max_length=250)
+
+
+class Order(models.Model):
     ORDER_STATUS_PAID = 'p'
     ORDER_STATUS_UNPAID = 'u'
     ORDER_STATUS_CANCELED = 'c'
@@ -36,11 +47,34 @@ class order(models.Model):
         (ORDER_STATUS_PAID, 'Paid'),
         (ORDER_STATUS_UNPAID, 'Unpaid'),
         (ORDER_STATUS_CANCELED, 'Canceled'),
-    ]
+        ]
     customer = models.ForeignKey(to=Customer, on_delete=models.PROTECT)
     status = models.CharField(max_length=1, choices=2)
     datetime_created = models.DateTimeField(auto_now_add=True, choices=ORDER_STATUS, default=ORDER_STATUS_UNPAID)
-    
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(to=Product, on_delete=models.PROTECT)
+    order = models.ForeignKey(to=Order, on_delete=models.PROTECT)
+    quantity = models.PositiveSmallIntegerField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    class Meta:
+        unique_together = [['order', 'product']]
+
+
+class Cart(models.Model):
+    datetime_created = models.DateTimeField(auto_now_add=True)
+
+
+class CartItem(models.Model):
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(to=Cart, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField()
+
+    class Meta:
+        unique_together = [['cart', 'product']]
+ 
 
 class Comment(models.Model):
     COMMENT_STATUS_WAITING = 'w'
@@ -59,10 +93,3 @@ class Comment(models.Model):
     status = models.CharField(max_length=2, choices=COMMENT_STATUS, default=COMMENT_STATUS_WAITING)
 
     datetime_created = models.DateTimeField(auto_now_add=True)
-
-
-class Address(models.Model):
-    customer = models.OneToOneField(to=Customer, on_delete=models.CASCADE, primary_key=True)
-    province = models.CharField(max_length=250)
-    city = models.CharField(max_length=250)
-    street = models.CharField(max_length=250)
