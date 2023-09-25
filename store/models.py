@@ -4,6 +4,7 @@ from django.db import models
 class Category(models.Model):
     title = models.CharField(max_length=250)
     description = models.CharField(max_length=700, blank=True)
+    top_product = models.ForeignKey(to='Product', on_delete=models.SET_NULL, null=True)
 
 
 class Discount(models.Model):
@@ -18,9 +19,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6 ,decimal_places=2)
     inventory = models.PositiveIntegerField()
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT, related_name='products')
-    discounts = models.ManyToManyField(to=Discount, blank=True,)
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_modified = models.DateTimeField(auto_now=True)
+    discounts = models.ManyToManyField(to=Discount, blank=True)
 
 
 class Customer(models.Model):
@@ -48,14 +49,15 @@ class Order(models.Model):
         (ORDER_STATUS_UNPAID, 'Unpaid'),
         (ORDER_STATUS_CANCELED, 'Canceled'),
         ]
-    customer = models.ForeignKey(to=Customer, on_delete=models.PROTECT)
+    
+    customer = models.ForeignKey(to=Customer, on_delete=models.PROTECT, related_name='orders')
     status = models.CharField(max_length=1, choices=2)
     datetime_created = models.DateTimeField(auto_now_add=True, choices=ORDER_STATUS, default=ORDER_STATUS_UNPAID)
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(to=Product, on_delete=models.PROTECT)
-    order = models.ForeignKey(to=Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(to=Order, on_delete=models.PROTECT, related_name='items')
+    product = models.ForeignKey(to=Product, on_delete=models.PROTECT, related_name='order_items')
     quantity = models.PositiveSmallIntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
@@ -68,8 +70,8 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
-    cart = models.ForeignKey(to=Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(to=Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name='cart_items')
     quantity = models.PositiveSmallIntegerField()
 
     class Meta:
