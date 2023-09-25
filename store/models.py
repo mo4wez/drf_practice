@@ -13,7 +13,7 @@ class Discount(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=250)
+    title = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
     unit_price = models.DecimalField(max_digits=6 ,decimal_places=2)
@@ -37,9 +37,6 @@ class Address(models.Model):
     province = models.CharField(max_length=250)
     city = models.CharField(max_length=250)
     street = models.CharField(max_length=250)
-
-    class Meta:
-        db_table = 'customer_address'
 
 
 class Order(models.Model):
