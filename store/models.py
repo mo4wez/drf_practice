@@ -59,7 +59,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(to=Order, on_delete=models.PROTECT, related_name='items')
     product = models.ForeignKey(to=Product, on_delete=models.PROTECT, related_name='order_items')
     quantity = models.PositiveSmallIntegerField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 
     class Meta:
         unique_together = [['order', 'product']]
