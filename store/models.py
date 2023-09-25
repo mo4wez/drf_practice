@@ -38,6 +38,9 @@ class Address(models.Model):
     city = models.CharField(max_length=250)
     street = models.CharField(max_length=250)
 
+    class Meta:
+        db_table = 'customer_address'
+
 
 class Order(models.Model):
     ORDER_STATUS_PAID = 'p'
