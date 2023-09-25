@@ -4,7 +4,7 @@ from django.db import models
 class Category(models.Model):
     title = models.CharField(max_length=250)
     description = models.CharField(max_length=700, blank=True)
-    top_product = models.ForeignKey(to='Product', on_delete=models.SET_NULL, null=True)
+    top_product = models.ForeignKey(to='Product', on_delete=models.SET_NULL, null=True, related_name='+')
 
 
 class Discount(models.Model):
@@ -51,8 +51,8 @@ class Order(models.Model):
         ]
     
     customer = models.ForeignKey(to=Customer, on_delete=models.PROTECT, related_name='orders')
-    status = models.CharField(max_length=1, choices=2)
-    datetime_created = models.DateTimeField(auto_now_add=True, choices=ORDER_STATUS, default=ORDER_STATUS_UNPAID)
+    status = models.CharField(max_length=1, choices=ORDER_STATUS, default=ORDER_STATUS_UNPAID)
+    datetime_created = models.DateTimeField(auto_now_add=True)
 
 
 class OrderItem(models.Model):
