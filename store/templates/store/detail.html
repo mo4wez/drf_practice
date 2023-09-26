@@ -2,5 +2,22 @@
 <html lang="en">
     <body>
             <h1>Welcome to Store!</h1>
+
+            <div>
+                {% for product in products %}
+                    <h1>
+                        {{product.name}}
+                    </h1>
+                    <h3>
+                        price: {{product.unit_price}} 
+                    </h3>
+                    <h3>
+                        inventory: {{product.inventory}}
+                    </h3>
+                    <hr>
+                {% empty %}
+                    <h1>No results</h1>
+                {% endfor %}
+            </div>
     </body>
 </html>
