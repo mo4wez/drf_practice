@@ -46,7 +46,7 @@ class CustomerFactory(DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     email = factory.Faker("email")
-    phone_number = factory.Faker("phone_number")
+    phone_number = factory.Faker("numerify", text="###########")
     birth_date = factory.LazyFunction(lambda: faker.date_time_ad(start_datetime=datetime(1990,1,1), end_datetime=datetime(2015,1,1)))
 
 

@@ -13,7 +13,7 @@ class Discount(models.Model):
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=250)
+    name = models.CharField(max_length=250)
     slug = models.SlugField()
     description = models.TextField()
     unit_price = models.DecimalField(max_digits=6 ,decimal_places=2)
