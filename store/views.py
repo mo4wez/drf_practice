@@ -1,15 +1,11 @@
 from django.shortcuts import render
 
-from .models import Product
+from .models import Product, OrderItem, Customer, Order
 
 def show_data(request):
-    queryset = Product.objects.filter(
-        name__icontains='car',
-        datetime_created__year=2021,
-        inventory__gt=50,
-        )
-    print(len(queryset))
+    queryset_tom = Customer.objects.filter(first_name__icontains='tom')
+    queryset = Order.objects.filter(customer__in=queryset_tom)
 
-    return render(request, 'store/detail.html', context={
-        'products': list(queryset),
-    })
+    print(list(queryset))
+
+    return render(request, 'store/detail.html',)

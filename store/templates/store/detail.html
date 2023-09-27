@@ -4,19 +4,16 @@
             <h1>Welcome to Store!</h1>
 
             <div>
-                {% for product in products %}
+                {% for order_item in order_items %}
                     <h1>
-                        {{product.name}}
+                        {{order_item.order}}
                     </h1>
                     <h3>
-                        price: {{product.unit_price}} 
+                        product: {{order_item.product}} 
                     </h3>
                     <h3>
-                        inventory: {{product.inventory}}
+                        quantity: {{order_item.quantity}}
                     </h3>
-                    <span>
-                        year: {{product.datetime_created}}
-                    </span>
                     <hr>
                 {% empty %}
                     <h1>No results</h1>
